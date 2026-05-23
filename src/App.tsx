@@ -114,7 +114,7 @@ export default function App() {
       <nav className="navbar">
         <div className="navbar-inner">
           <span className="brand">HashStamp</span>
-          <WalletButton />
+          {/* <WalletButton /> */}
         </div>
       </nav>
 
@@ -130,7 +130,7 @@ export default function App() {
         <section className="card">
           <h2>1. Connect Your Wallet</h2>
           <p className="card-description">
-            Connect a Pera or Lute wallet to sign the stamping transaction.
+            Connect your wallet to sign the stamping transaction.
           </p>
           <WalletButton />
           {activeAddress && (

@@ -1,6 +1,6 @@
 import { WalletManager, WalletId, NetworkId } from "@txnlab/use-wallet-react";
 
 export const walletManager = new WalletManager({
-  wallets: [WalletId.PERA, WalletId.LUTE],
+  wallets: [WalletId.LUTE, WalletId.PERA],
   defaultNetwork: NetworkId.LOCALNET,
 });
