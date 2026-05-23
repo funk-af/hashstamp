@@ -1,6 +1,30 @@
 {
   "name": "hashstamp",
   "version": "1.0.0",
+  "description": "Open-source file timestamping app that records SHA-256 file hashes on Algorand.",
+  "private": true,
+  "license": "MIT",
+  "author": "Andrew Funk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/funk-af/hashstamp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/funk-af/hashstamp/issues"
+  },
+  "homepage": "https://github.com/funk-af/hashstamp#readme",
+  "keywords": [
+    "algorand",
+    "blockchain",
+    "timestamp",
+    "sha256",
+    "file-hash",
+    "react",
+    "vite"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
