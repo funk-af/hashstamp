@@ -21,6 +21,7 @@
   --color-bg-light: #f8f8f8;
   --color-border: #eee;
   --color-border-dark: #ddd;
+  --navbar-height: 56px;
   --radius: 3px;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.12);
@@ -57,10 +58,15 @@ a:hover {
 
 /* Navbar */
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
   background: var(--color-navbar);
   color: #fff;
   padding: 0 24px;
-  height: 56px;
+  height: var(--navbar-height);
   display: flex;
   align-items: center;
   box-shadow: var(--shadow-md);
@@ -99,44 +105,24 @@ a:hover {
   min-width: 130px;
   border: 1px solid rgba(255, 255, 255, 0.36);
   border-radius: var(--radius);
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.14),
-      rgba(255, 255, 255, 0.08)
-    ),
-    var(--color-navbar);
+  background-color: var(--color-navbar);
   color: #fff;
   font-size: 0.8125rem;
   font-weight: 600;
-  padding: 0 30px 0 10px;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image:
-    linear-gradient(45deg, transparent 50%, rgba(255, 255, 255, 0.85) 50%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.85) 50%, transparent 50%);
-  background-position:
-    calc(100% - 14px) 13px,
-    calc(100% - 9px) 13px;
-  background-size:
-    5px 5px,
-    5px 5px;
-  background-repeat: no-repeat;
+  padding: 0 10px;
+  appearance: auto;
+  -webkit-appearance: menulist;
+  -moz-appearance: menulist;
+  color-scheme: light;
   transition:
     border-color 0.15s,
     box-shadow 0.15s,
-    background 0.15s;
+    background-color 0.15s;
 }
 
 .network-select:hover:not(:disabled) {
   border-color: rgba(255, 255, 255, 0.58);
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.18),
-      rgba(255, 255, 255, 0.1)
-    ),
-    var(--color-navbar);
+  background-color: #2d4658;
 }
 
 .network-select:focus-visible {
@@ -151,6 +137,7 @@ a:hover {
 }
 
 .network-select option {
+  background: #fff;
   color: #222;
 }
 
@@ -168,7 +155,7 @@ a:hover {
   max-width: 900px;
   width: 100%;
   margin: 0 auto;
-  padding: 32px 24px 48px;
+  padding: calc(var(--navbar-height) + 32px) 24px 48px;
   flex: 1;
 }
 
@@ -434,7 +421,7 @@ a:hover {
     padding: 20px;
   }
   .container {
-    padding: 20px 16px 32px;
+    padding: calc(var(--navbar-height) + 20px) 16px 32px;
   }
   .wallet-status {
     max-width: 160px;
@@ -450,7 +437,7 @@ a:hover {
 
   .network-select {
     min-width: 106px;
-    padding-right: 26px;
+    padding-right: 8px;
   }
 }
 
