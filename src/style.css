@@ -372,8 +372,10 @@ a:hover {
     "Segoe UI",
     Roboto,
     sans-serif !important;
-  font-size: 0.9375rem;
-  font-weight: 600;
+}
+[data-wallet-ui][data-wallet-button] {
+  font-size: 0.9375rem !important;
+  font-weight: 600 !important;
 }
 
 [data-wallet-ui].rounded-lg,
