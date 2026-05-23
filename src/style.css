@@ -81,6 +81,79 @@ a:hover {
   letter-spacing: -0.5px;
 }
 
+.appbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.network-select-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.network-select {
+  height: 32px;
+  min-width: 130px;
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.14),
+      rgba(255, 255, 255, 0.08)
+    ),
+    var(--color-navbar);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0 30px 0 10px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, rgba(255, 255, 255, 0.85) 50%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.85) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 13px,
+    calc(100% - 9px) 13px;
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background 0.15s;
+}
+
+.network-select:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.58);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.18),
+      rgba(255, 255, 255, 0.1)
+    ),
+    var(--color-navbar);
+}
+
+.network-select:focus-visible {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 0 2px rgba(21, 165, 235, 0.45);
+}
+
+.network-select:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.network-select option {
+  color: #222;
+}
+
 .wallet-status {
   font-size: 0.8125rem;
   color: rgba(255, 255, 255, 0.8);
@@ -221,20 +294,6 @@ a:hover {
   display: inline-block;
   margin-top: 6px;
   word-break: break-all;
-}
-
-.wallet-info .network-badge {
-  margin-top: 8px;
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: #1a6fa8;
-  background: #e8f4fd;
-  border: 1px solid #bce0f7;
-  border-radius: var(--radius);
-  padding: 4px 8px;
 }
 
 /* File input */
@@ -379,6 +438,19 @@ a:hover {
   }
   .wallet-status {
     max-width: 160px;
+  }
+
+  .appbar-controls {
+    gap: 6px;
+  }
+
+  .network-select-label {
+    display: none;
+  }
+
+  .network-select {
+    min-width: 106px;
+    padding-right: 26px;
   }
 }
 

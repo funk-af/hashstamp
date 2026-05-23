@@ -1,5 +1,6 @@
 [
   {
+    "name": "MainNet",
     "networkId": "mainnet",
     "indexer": {
       "url": "https://mainnet-idx.algonode.cloud",
@@ -8,6 +9,7 @@
     }
   },
   {
+    "name": "TestNet",
     "networkId": "testnet",
     "indexer": {
       "url": "https://testnet-idx.algonode.cloud",
@@ -16,6 +18,7 @@
     }
   },
   {
+    "name": "LocalNet",
     "networkId": "localnet",
     "indexer": {
       "url": "http://localhost",

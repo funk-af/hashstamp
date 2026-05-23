@@ -8,10 +8,18 @@ import {
   getTransactionExplorerUrl,
   type HashStampRecord,
 } from "./indexer";
+import networks from "./networks.json";
+
+type NetworkOption = {
+  name: string;
+  networkId: string;
+};
+
+const NETWORK_OPTIONS = networks as NetworkOption[];
 
 export default function App() {
   const { activeAddress, transactionSigner, algodClient } = useWallet();
-  const { activeNetwork } = useNetwork();
+  const { activeNetwork, setActiveNetwork } = useNetwork();
 
   const [fileName, setFileName] = useState<string | null>(null);
   const [currentHash, setCurrentHash] = useState<string | null>(null);
@@ -24,6 +32,7 @@ export default function App() {
   const [history, setHistory] = useState<HashStampRecord[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
+  const [isSwitchingNetwork, setIsSwitchingNetwork] = useState(false);
 
   const loadHistory = useCallback(
     async (address: string, networkId: string) => {
@@ -104,17 +113,44 @@ export default function App() {
     loadHistory,
   ]);
 
+  const handleNetworkChange = useCallback(
+    async (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const networkId = event.target.value;
+      setIsSwitchingNetwork(true);
+      try {
+        await setActiveNetwork(networkId);
+      } catch (err) {
+        setHistoryError((err as Error).message);
+      } finally {
+        setIsSwitchingNetwork(false);
+      }
+    },
+    [setActiveNetwork],
+  );
+
   const canStamp = !!activeAddress && !!currentHash && !isSubmitting;
-  const isMainnet = activeNetwork.toLowerCase() === "mainnet";
-  const networkLabel =
-    activeNetwork.charAt(0).toUpperCase() + activeNetwork.slice(1);
 
   return (
     <>
       <nav className="navbar">
         <div className="navbar-inner">
           <span className="brand">HashStamp</span>
-          {/* <WalletButton /> */}
+          <div className="appbar-controls">
+            <select
+              id="network-select"
+              className="network-select"
+              value={activeNetwork.toLowerCase()}
+              onChange={handleNetworkChange}
+              disabled={isSwitchingNetwork}
+              aria-label="Select Algorand network"
+            >
+              {NETWORK_OPTIONS.map((network) => (
+                <option key={network.networkId} value={network.networkId}>
+                  {network.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </nav>
 
@@ -135,12 +171,7 @@ export default function App() {
           <WalletButton />
           {activeAddress && (
             <div className="wallet-info">
-              <div>
-                <span className="address">{activeAddress}</span>
-              </div>
-              {!isMainnet && (
-                <div className="network-badge">Network: {networkLabel}</div>
-              )}
+              <span className="address">{activeAddress}</span>
             </div>
           )}
         </section>
