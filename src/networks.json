@@ -1,0 +1,26 @@
+[
+  {
+    "networkId": "mainnet",
+    "indexer": {
+      "url": "https://mainnet-idx.algonode.cloud",
+      "port": "",
+      "token": ""
+    }
+  },
+  {
+    "networkId": "testnet",
+    "indexer": {
+      "url": "https://testnet-idx.algonode.cloud",
+      "port": "",
+      "token": ""
+    }
+  },
+  {
+    "networkId": "localnet",
+    "indexer": {
+      "url": "http://localhost",
+      "port": "8980",
+      "token": ""
+    }
+  }
+]

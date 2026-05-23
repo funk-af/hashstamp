@@ -1,11 +1,17 @@
-import { useState, useCallback } from "react";
-import { useWallet } from "@txnlab/use-wallet-react";
+import { useState, useCallback, useEffect } from "react";
+import { useNetwork, useWallet } from "@txnlab/use-wallet-react";
 import { WalletButton } from "@txnlab/use-wallet-ui-react";
 import { hashFile } from "./hash";
 import { submitHashStamp } from "./transaction";
+import {
+  fetchHashStamps,
+  getTransactionExplorerUrl,
+  type HashStampRecord,
+} from "./indexer";
 
 export default function App() {
   const { activeAddress, transactionSigner, algodClient } = useWallet();
+  const { activeNetwork } = useNetwork();
 
   const [fileName, setFileName] = useState<string | null>(null);
   const [currentHash, setCurrentHash] = useState<string | null>(null);
@@ -14,6 +20,35 @@ export default function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<string | null>(null);
   const [txError, setTxError] = useState<string | null>(null);
+
+  const [history, setHistory] = useState<HashStampRecord[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState<string | null>(null);
+
+  const loadHistory = useCallback(
+    async (address: string, networkId: string) => {
+      setHistoryLoading(true);
+      setHistoryError(null);
+      try {
+        const records = await fetchHashStamps(address, networkId);
+        setHistory(records);
+      } catch (err) {
+        setHistoryError((err as Error).message);
+      } finally {
+        setHistoryLoading(false);
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (activeAddress) {
+      loadHistory(activeAddress, activeNetwork);
+    } else {
+      setHistory([]);
+      setHistoryError(null);
+    }
+  }, [activeAddress, activeNetwork, loadHistory]);
 
   const handleFileChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,14 +89,25 @@ export default function App() {
         currentHash,
       );
       setTxResult(txId);
+      loadHistory(activeAddress, activeNetwork);
     } catch (err) {
       setTxError((err as Error).message);
     } finally {
       setIsSubmitting(false);
     }
-  }, [currentHash, activeAddress, algodClient, transactionSigner]);
+  }, [
+    currentHash,
+    activeAddress,
+    activeNetwork,
+    algodClient,
+    transactionSigner,
+    loadHistory,
+  ]);
 
   const canStamp = !!activeAddress && !!currentHash && !isSubmitting;
+  const isMainnet = activeNetwork.toLowerCase() === "mainnet";
+  const networkLabel =
+    activeNetwork.charAt(0).toUpperCase() + activeNetwork.slice(1);
 
   return (
     <>
@@ -89,7 +135,12 @@ export default function App() {
           <WalletButton />
           {activeAddress && (
             <div className="wallet-info">
-              <span className="address">{activeAddress}</span>
+              <div>
+                <span className="address">{activeAddress}</span>
+              </div>
+              {!isMainnet && (
+                <div className="network-badge">Network: {networkLabel}</div>
+              )}
             </div>
           )}
         </section>
@@ -150,7 +201,7 @@ export default function App() {
                 <br />
                 <a
                   className="tx-link"
-                  href={`https://allo.info/tx/${txResult}`}
+                  href={getTransactionExplorerUrl(activeNetwork, txResult)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -160,6 +211,71 @@ export default function App() {
             )}
           </div>
         </section>
+
+        {activeAddress && (
+          <section className="card">
+            <h2>History</h2>
+            <p className="card-description">
+              Previous hashstamp transactions from your connected wallet.
+            </p>
+            {historyLoading && (
+              <div className="status-message info">Loading history…</div>
+            )}
+            {historyError && (
+              <div className="status-message error">
+                Failed to load history: {historyError}
+              </div>
+            )}
+            {!historyLoading && !historyError && history.length === 0 && (
+              <div className="status-message info">
+                No hashstamp transactions found for this wallet.
+              </div>
+            )}
+            {history.length > 0 && (
+              <div className="table-wrap">
+                <table className="history-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Algorithm</th>
+                      <th>Hash</th>
+                      <th>Transaction</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {history.map((record) => (
+                      <tr key={record.txId}>
+                        <td className="no-wrap">
+                          {new Date(
+                            record.timestamp * 1000,
+                          ).toLocaleDateString()}
+                        </td>
+                        <td>{record.algorithm}</td>
+                        <td className="hash-cell" title={record.hash}>
+                          {record.hash.slice(0, 16)}…
+                        </td>
+                        <td>
+                          <a
+                            href={getTransactionExplorerUrl(
+                              activeNetwork,
+                              record.txId,
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="tx-link"
+                            title={record.txId}
+                          >
+                            {record.txId.slice(0, 12)}…
+                          </a>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+        )}
       </main>
 
       <footer className="footer">
